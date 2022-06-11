@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<!--不可修改信息-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name="apple-mobile/src-web-app-capable" content="yes">
+    <meta name="apple-mobile/src-web-app-status-bar-style" content="black">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>个人信息填写</title>
+    <link href="./static/11845stu.css" rel="preload" as="style">
+    <link href="./static/11845stu.css" rel="stylesheet">
+    <link href="./static/chunk-vendors.css" rel="preload" as="style">
+    <link href="./static/chunk-vendors.css" rel="stylesheet">
+    <link href="./static/style.css" rel="preload" as="style">
+    <link href="./static/style.css" rel="stylesheet">
+</head>
+
+<body>
+<div id="app" data-v-app>
+    <div class="page-container" data-v-fae8cc3a>
+        <div class="van-cell-group__title">学生信息</div>
+        <div class="van-cell-group van-hairline--top-bottom">
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>姓名</span></div>
+                <div class="van-cell__value"><input id="name" value="张三"></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>学号</span></div>
+                <div class="van-cell__value"><input id="id" value="3119000000"></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>学院</span></div>
+                <div class="van-cell__value"><input id="college" value="管理学院"></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>专业</span></div>
+                <div class="van-cell__value"><input id="major" value="信息管理与信息系统"></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>班级</span></div>
+                <div class="van-cell__value"><input id="clazz" value="信息管理与信息系统19(1)">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="van-action-bar">
+        <div onclick="storage()"
+             class="van-button van-button--primary van-button--large van-action-bar-button van-action-bar-button--primary van-action-bar-button--last van-action-bar-button--first">
+            <div class="van-button__content"><span class="van-button__text">保存</span></div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+<script>
+    const keys = ['name', 'id', 'college', 'major', 'clazz']
+    keys.forEach(key => injectParameter(key));
+
+    function storageParameter(key) {
+        const value = document.getElementById(key).value;
+        localStorage.setItem(key, value);
+    }
+
+    function injectParameter(key) {
+        let value = localStorage.getItem(key);
+        value && (document.getElementById(key).value = value);
+    }
+
+    function storage() {
+        keys.forEach(key => storageParameter(key));
+        document.location = "code.html";
+    }
+
+</script>

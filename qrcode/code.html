@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<!--不可修改信息-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name="apple-mobile/src-web-app-capable" content="yes">
+    <meta name="apple-mobile/src-web-app-status-bar-style" content="black">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>外出登记二维码</title>
+    <link href="./static/11845stu.css" rel="preload" as="style">
+    <link href="./static/11845stu.css" rel="stylesheet">
+    <link href="./static/chunk-vendors.css" rel="preload" as="style">
+    <link href="./static/chunk-vendors.css" rel="stylesheet">
+    <script src="./static/dayjs.min.js"></script>
+    <script src="./static/timeInject.js"></script>
+
+</head>
+
+<body>
+<div id="app" data-v-app>
+    <div class="page-container" data-v-fae8cc3a>
+        <div class="timer" data-v-fae8cc3a id="currentTime">0000-00-00 00:00:00</div>
+        <div class="ex-qrcode center qrcode" width="180" height="180" data-v-544d011e data-v-fae8cc3a
+             onclick="clickCode()">
+            <img id="qrcode" src="./static/green.png" style="height: 120px; width: 120px;" alt="">
+        </div>
+        <div class="van-cell-group__title">外出时间</div>
+        <div class="van-cell-group van-hairline--top-bottom mg-b">
+            <div class="van-cell van-cell--large" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>离校时间</span></div>
+                <div class="van-cell__value"><span class="text-black" data-v-fae8cc3a
+                                                   style="font-weight: bold;"
+                                                   id="outTime">0000-00-00 00:00:00</span></div>
+            </div>
+            <div class="van-cell van-cell--large" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>回校时间</span></div>
+                <div class="van-cell__value"><span class="text-black" data-v-fae8cc3a
+                                                   style="font-weight: bold;"
+                                                   id="backTime">0000-00-00 00:00:00</span>
+                </div>
+            </div>
+        </div>
+        <div class="van-cell-group__title">学生信息</div>
+        <div class="van-cell-group van-hairline--top-bottom">
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>姓名</span></div>
+                <div class="van-cell__value"><span id="name"></span></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>学号</span></div>
+                <div class="van-cell__value"><span id="id"></span></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>学院</span></div>
+                <div class="van-cell__value"><span id="college"></span></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>专业</span></div>
+                <div class="van-cell__value"><span id="major"></span></div>
+            </div>
+            <div class="van-cell" data-v-fae8cc3a>
+                <div class="van-cell__title"><span>班级</span></div>
+                <div class="van-cell__value"><span id="clazz"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+<script>
+
+    //获取当前Url，并解析url中的参数
+    const urlParams = new URLSearchParams(new URL(window.location.href).search);
+
+    // 定义更新时间方法，将时间注入html,
+    function updateTime() {
+        const timeElement = document.getElementById("currentTime");
+        let currentTime = dayjs();
+        timeElement.innerHTML = currentTime.format('YYYY-MM-DD HH:mm:ss');
+        //判断是否在申请时间之内，时间不对则替换为红码
+        const overtime = currentTime.isAfter(document.getElementById('outTime').innerHTML) && currentTime.isBefore(document.getElementById('backTime').innerHTML)
+        if (!overtime) document.getElementById("qrcode").setAttribute('src', './static/red.png');
+    }
+
+    // 向DOM中注入url参数
+    function injectParameter(key) {
+        let value = localStorage.getItem(key);
+        if (!value) value = urlParams.get(key);
+        if (!value) value = timeInject(key);
+        (document.getElementById(key).innerHTML = value);
+    }
+
+    //从url参数中获得数据并注入
+    const keys = ['name', 'id', 'college', 'major', 'clazz', 'outTime', 'backTime']
+    //个人信息必须保存完善
+    for (let i = 0; i < keys.length - 3; i++)
+        if (!localStorage.getItem(keys[i])) document.location = "information.html";
+    keys.forEach(key => injectParameter(key));
+    // 定时器每秒更新时间
+    setInterval("updateTime()", 1000);
+    //连续点击三次二维码以更改个人信息
+    let click = 0;
+    let timeoutBox;
+    timeoutBox = setTimeout(() => click = 0, 1000);
+
+    function clickCode() {
+        click++;
+        console.log("click:" + click);
+        if (click === 3) {
+            document.location = "information.html";
+            click = 0;
+        }
+        clearTimeout(timeoutBox);
+        timeoutBox = setTimeout(() => click = 0, 500);
+    }
+
+</script>
